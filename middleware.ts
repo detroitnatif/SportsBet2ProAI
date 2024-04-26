@@ -7,7 +7,9 @@ const isProtectedRoute = createRouteMatcher([
   '/',
   '/profile',
   '/api/assistant/create',
-  '/api/assistant/thread'
+  '/api/assistant/thread',
+  '/api/assistant/message/create',
+  '/api/assistant/message/list'
 
 ]);
 
