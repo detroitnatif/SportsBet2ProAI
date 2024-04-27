@@ -21,7 +21,7 @@ function NavBar() {
     return (
         <div className='p-4 flex flex-row justify-between items-center bg-black text-white'>
             <Link href='/' className='text-2xl font-bold'>
-                SportsBetAI
+                Sharps&Squares
             </Link>
             <div className='flex gap-x-6 text-lg items-center'>
                 {routes.map((route, idx) => (

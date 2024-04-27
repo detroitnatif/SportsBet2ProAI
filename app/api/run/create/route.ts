@@ -6,7 +6,7 @@ export async function POST(req: NextRequest){
 
     if (!threadId || !assistantId){
         return NextResponse.json(
-            {error: 'threadId and assisstantId are required', success: false},
+            {error: 'threadId and assistantId are required to create run', success: false},
             {status: 400}
         );
 
