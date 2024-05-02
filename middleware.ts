@@ -6,7 +6,8 @@ import {
 const isProtectedRoute = createRouteMatcher([
   '/',
   '/profile',
-  '/api/assistant/create',
+  // '/api/assistant/create',
+  '/api/assistant',
   '/api/assistant/thread',
   '/api/assistant/message/create',
   '/api/assistant/message/list',

@@ -38,6 +38,7 @@ function ChatPage() {
         console.error(response.data.error ?? "Unknown error.");
         return;
       }
+     console.log(response.data.messages)
 
       let newMessages = response.data.messages;
 
@@ -102,6 +103,7 @@ function ChatPage() {
   };
 
   const pollRunStatus = async (threadId: string, runId: string) => {
+    console.log('polling')
     // api/run/retrieve
     setPollingRun(true);
 
