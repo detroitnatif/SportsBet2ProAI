@@ -149,6 +149,8 @@ function ChatPage() {
   };
 
   const sendMessage = async () => {
+
+    console.log("message sent")
     // Validation
     if (!userThread || sending || !assistant) {
       toast.error("Failed to send message. Invalid state.");
@@ -221,10 +223,10 @@ function ChatPage() {
             }`}
           >
             {message.content[0].type === "text"
-              ? message.content[0].text.value
-                  .split("\n")
-                  .map((text, index) => <p key={index}>{text}</p>)
-              : null}
+  ? message.content[0].text.value
+      .split("\n")
+      .map((text: string, index: number) => <p key={index}>{text}</p>)
+  : null}
           </div>
         ))}
       </div>
@@ -237,8 +239,11 @@ function ChatPage() {
             className="flex-grow bg-transparent text-black focus:outline-none"
             placeholder="Type a message..."
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => 
+              setMessage(e.target.value)}
+            
           />
+          
           <button
             disabled={
               !userThread?.threadId || !assistant || sending || !message.trim()
