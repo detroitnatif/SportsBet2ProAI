@@ -4,12 +4,40 @@ import NavBar from "@/components/ui/navbar";
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import { useAtom } from "jotai";
-import { userThreadAtom } from "@/atoms";
-import { UserThread } from "@prisma/client";
+import { userThreadAtom, assistantAtom } from "@/atoms";
+import { Assistant, UserThread } from "@prisma/client";
+import toast from 'react-hot-toast';
 
 export default function AppLayout({children}: {children: React.ReactNode}){
     // const [userThread, setUserThread] = useState<UserThread | null>(null);
     const [userThread, setUserThread] = useAtom(userThreadAtom)
+    const [assistant, setAssistant] = useAtom(assistantAtom)
+
+    useEffect(() => {
+        if(assistant) return;
+        async function getAssistant(){
+            try{
+                const response = await axios.get<{
+                    success: boolean;
+                    error?: string;
+                    assistant: Assistant;
+                }>('api/assistant');
+
+                if (!response.data.success || !response.data.assistant){
+                    toast.error('failed to fetch assistant')
+                    setAssistant(null)
+                    return 
+
+                }
+                setAssistant(response.data.assistant);
+
+            }catch(e){
+                setAssistant(null)
+                return
+            }
+        }
+        getAssistant();
+    }, [setAssistant])
 
     useEffect(() => {
 
