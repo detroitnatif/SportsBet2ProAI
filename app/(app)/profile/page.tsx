@@ -1,11 +1,34 @@
 import React from 'react'
+import { currentUser } from '@clerk/nextjs/server';
+import prismadb from '@/lib/prismadb';
+import ProfileContainer from '@/components/ProfileContainer';
+async function ProfilePage() {
+  const user = await currentUser();
 
-function ProfilePage() {
+  if (!user){
+    throw new Error('no user')
+  }
+
+  let challengePreferences = await prismadb.challengePreferences.findUnique(
+    where: {
+      userId: user.id
+    }
+  );
+  if (!challengePreferences) {
+    challengePreferences = await prismadb.challengePreferences.create({
+      data: {
+        userId: user.id,
+        challengeId: "EASY"
+      },
+    });
+  }
+
   return (
-    <div>ProfilePage
+    <div>
+      <ProfileContainer challengePreferences={challengePreferences}/>
       
     </div>
-  )
+  );
 }
 
 export default ProfilePage;
