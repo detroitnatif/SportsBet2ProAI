@@ -7,6 +7,8 @@ interface ProfileContainerProps {
     challengePreferences: ChallengePreferences;
 }
 import { useState } from 'react';
+import LevelCard from './LevelCard';
+import axios from 'axios';
 
 const levels = [
     {id: 'NOVICE',
@@ -14,7 +16,7 @@ const levels = [
     description: "Recieve a bet once a day based on your favorite teams"},
 
     {id: 'INTERMEDIATE',
-    name: 'INTERMEDIATE',
+    name: 'Intermediate',
     description: "Recieve a bet twice a day based on your favorite teams and players"},
 
     {id: 'PRO',
@@ -22,11 +24,24 @@ const levels = [
     description: "Recieve a bet three times a day based on your favorite teams and players"}
 ]
 
-const handleLevel = 
+
 
 export default function ProfileContainer({challengePreferences} : ProfileContainerProps) {
     const [sendNotifications, setSendNotifications] = useState(challengePreferences.sendNotifications)
 
+    
+    const handleLevel = async() => {
+        try{await axios.post<{
+        success: boolean;
+        error?: string;
+        data?: string;
+    
+    }>('/api/challengeUpdate',{id, notification, challengeId})}
+    
+    catch(e){
+        return;
+    }
+};
 
   return (
     <div className='flex flex-col'>
@@ -41,7 +56,7 @@ export default function ProfileContainer({challengePreferences} : ProfileContain
         </div>
         <Switch checked={sendNotifications}></Switch>
       </div>
-      <div>
+      <div className='flex flex-col p-5 mb-10'>
         {levels.map((level) => (
         <LevelCard key={level.id} name={level.name} description={level.description} onClick={() => handleLevel(level.id)} />
         ))};

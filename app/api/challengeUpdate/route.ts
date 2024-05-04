@@ -3,7 +3,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
-export async function GET(){
+export async function POST(request: Request){
     const user = await currentUser();
 
     if (!user) {
@@ -12,23 +12,25 @@ export async function GET(){
             {status: 401}
         );
     }
-    const challengePreferences = await prismadb.challengePreferences.findUnique({
-        where:{userId: user.id},
-    });
+    const {id, challengeId, notification, } = await request.json();
 
-    if (challengePreferences) {
-        return NextResponse.json({challengePreferences, success: true}, {status: 200})
+    if (!challengeId || !id || !notification) {
+        return NextResponse.json({message: "No prefs found", success: false}, {status: 444})
     }
     try {
     
-        const newChallengePreference = await prismadb.challengePreferences.create({
+        const newChallengePreference = await prismadb.challengePreferences.update({
+            where: {
+                id: id,
+                userId: user.id
+            },
             data: {
-                userId: user.id,
-                challengeId: "EASY"
+                challengeId: challengeId,
+                sendNotifications: notification,
             },
         });
         return NextResponse.json(
-            {userThread: newChallengePreference, success:true},
+            {data: newChallengePreference, success:true},
             {status:200}
         )
 
