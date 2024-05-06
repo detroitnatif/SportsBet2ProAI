@@ -1,5 +1,5 @@
 import { prismadb } from "@/lib/prismadb";
-import { UserThread } from "@prisma/client";
+import { UserThread, UserMeta } from "@prisma/client";
 import axios from "axios";
 import { cp } from "fs";
 import { NextResponse } from "next/server";
@@ -10,6 +10,10 @@ import OpenAI from "openai";
 interface UserThreadMap {
     [userId: string]: UserThread;
 }
+
+interface UserMetaMap {
+    [userId: string]: UserMeta;
+  }
 
 export async function POST(request: Request){
     const body = await request.json();
@@ -44,7 +48,7 @@ export async function POST(request: Request){
 
     const {
         data: {message, success},
-    } = await axios.post<{message?: stringify; success: boolean}>(
+    } = await axios.post<{message?: string; success: boolean}>(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/openai`,
         {messages,
         secret: process.env.APP_SECRET_KEY
@@ -73,11 +77,25 @@ export async function POST(request: Request){
         },
     });
 
+    const userMetas = await prismadb.userMeta.findMany({
+        where: {
+          userId: {
+            in: userIds,
+          },
+        },
+      });
+
     const UserThreadMap: UserThreadMap = userThreads.reduce((map, thread) => {
         map[thread.userId] = thread;
         return map;
 
     }, {} as UserThreadMap);
+
+    const userMetaMap = userMetas.reduce((map, meta) => {
+        map[meta.userId] = meta;
+        return map;
+      }, {} as UserMetaMap);
+    
 
     const threadAndNotificationsPromises: Promise<any>[] = [];
 
@@ -93,24 +111,24 @@ export async function POST(request: Request){
                         fromUser: 'false',
                     })
                 );
-                if (cp.sendNotifications) {
-                    const correspondingUserMeta = userMetaMap[cp.userId];
-                    threadAndNotificationsPromises.push(
-                        axios.post(
-                            `${process.env.NEXT_PUBLIC_BASE_URL}/api/send-notifications`,
-                            {
-                                subscription: {
-                                    endpoint: correspondingUserMeta.endpoint,
-                                    keys: {
-                                        auth: correspondingUserMeta.auth,
-                                        p256dh: correspondingUserMeta.p256dh,
-                                    },
-                                },
-                                message,
-                            }
-                        )
-                    )
-                }
+                // if (cp.sendNotifications) {
+                //     const correspondingUserMeta = userMetaMap[cp.userId];
+                //     threadAndNotificationsPromises.push(
+                //         axios.post(
+                //             `${process.env.NEXT_PUBLIC_BASE_URL}/api/send-notifications`,
+                //             {
+                //                 subscription: {
+                //                     endpoint: correspondingUserMeta.endpoint,
+                //                     keys: {
+                //                         auth: correspondingUserMeta.auth,
+                //                         p256dh: correspondingUserMeta.p256dh,
+                //                     },
+                //                 },
+                //                 message,
+                //             }
+                //         )
+                //     )
+                // }
             }
         });
         await Promise.all(threadAndNotificationsPromises);
