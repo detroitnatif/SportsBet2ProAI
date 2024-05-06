@@ -90,11 +90,37 @@ export async function POST(request: Request){
                     axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/message/create`,{
                         message,
                         threadId: userThread.threadId,
-                        fromUser: 'false'
+                        fromUser: 'false',
                     })
-                )
+                );
+                if (cp.sendNotifications) {
+                    const correspondingUserMeta = userMetaMap[cp.userId];
+                    threadAndNotificationsPromises.push(
+                        axios.post(
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/api/send-notifications`,
+                            {
+                                subscription: {
+                                    endpoint: correspondingUserMeta.endpoint,
+                                    keys: {
+                                        auth: correspondingUserMeta.auth,
+                                        p256dh: correspondingUserMeta.p256dh,
+                                    },
+                                },
+                                message,
+                            }
+                        )
+                    )
+                }
             }
-        })
+        });
+        await Promise.all(threadAndNotificationsPromises);
+        return NextResponse.json({message}, {status:200});
+    }catch(e){
+        console.error(e)
+        return NextResponse.json({success: false, message: "something went wrong with sending notif"},
+        {
+            status: 501,
+        } )
     }
 
     }
