@@ -214,16 +214,14 @@ function ChatPage() {
         )}
         {/* 3. LISTING OUT THE MESSAGES */}
         {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`px-4 py-2 mb-3 rounded-lg w-fit text-lg ${
-              ["true", "True"].includes(
-                (message.metadata as { fromUser?: string }).fromUser ?? ""
-              )
-                ? "bg-yellow-500 ml-auto"
-                : "bg-gray-700"
-            }`}
-          >
+         <div
+         key={message.id}
+         className={`px-4 py-2 mb-3 rounded-lg w-fit text-lg ${
+         message.metadata?.fromUser
+             ? "bg-yellow-500 ml-auto"
+             : "bg-gray-700"
+         }`}
+     >
             {message.content[0].type === "text"
   ? message.content[0].text.value
       .split("\n")

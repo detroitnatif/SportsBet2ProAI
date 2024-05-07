@@ -6,13 +6,17 @@ import axios from 'axios';
 import { useAtom } from "jotai";
 import { userThreadAtom, assistantAtom } from "@/atoms";
 import { Assistant, UserThread } from "@prisma/client";
+import useServiceWorker from "@/hooks/useServiceWorker";
 import toast from 'react-hot-toast';
 
 export default function AppLayout({children}: {children: React.ReactNode}){
     // const [userThread, setUserThread] = useState<UserThread | null>(null);
     const [userThread, setUserThread] = useAtom(userThreadAtom)
     const [assistant, setAssistant] = useAtom(assistantAtom)
+    
+    console.log('layout tsx')
 
+    useServiceWorker();
     useEffect(() => {
         if(assistant) return;
         async function getAssistant(){
