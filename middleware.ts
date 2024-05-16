@@ -12,7 +12,10 @@ const isProtectedRoute = createRouteMatcher([
   '/api/assistant/message/create',
   '/api/assistant/message/list',
   '/api/assistant/run/create',
-  '/api/assistant/run/retrieve'
+  '/api/assistant/run/retrieve',
+  '/api/challengeUpdate',
+
+
 
 
 ]);
