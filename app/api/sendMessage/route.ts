@@ -42,7 +42,7 @@ export async function POST(request: Request){
         },
         {
             role: "user",
-            content: "Give me a sports bet you think will be positive using historical data"
+            content: "Give me a sports bet you think will be positive using historical data please"
     
         }
     ];
