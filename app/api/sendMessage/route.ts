@@ -38,6 +38,8 @@ export async function POST(request: Request){
             Generate a hypothetical sports bet using historical data of players 
 
             for example: LeBron James will score more than 30 points
+
+            stephen curry will score more than 25 points
             `
         },
         {
