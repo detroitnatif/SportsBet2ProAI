@@ -38,3 +38,5 @@ export async function POST(req: Request) {
       );
     }
   }
+
+  // need to creat data pipeline which sticks it into pinecone
