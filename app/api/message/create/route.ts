@@ -40,3 +40,4 @@ export async function POST(req: Request) {
   }
 
   // need to creat data pipeline which sticks it into pinecone
+  // putlling data from several APIs and storing it into vector database
