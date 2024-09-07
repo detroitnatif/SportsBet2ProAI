@@ -14,6 +14,7 @@ const isProtectedRoute = createRouteMatcher([
   '/api/assistant/run/create',
   '/api/assistant/run/retrieve',
   '/api/challengeUpdate',
+  '/api/challengeUpdate',
 
 
 
